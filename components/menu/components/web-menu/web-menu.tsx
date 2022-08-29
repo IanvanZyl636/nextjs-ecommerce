@@ -1,5 +1,6 @@
 import { Menu, Transition } from "@headlessui/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { debounceTime, fromEvent, sampleTime, throttleTime } from "rxjs";
 import { MenuItemModel } from "../../../../common/models/menu-item.model";
 import MenuItem from "../menu-item/menu-item";
 
@@ -13,7 +14,7 @@ export default function WebMenu({
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
   const [menuTransition, setMenuTransition] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
-  const [prevScroll, setPrevScroll] = useState(0);
+  const [prevScroll, setPrevScroll] = useState(999);
 
   const handleScroll = useCallback(() => {
     const currentScroll = window.scrollY;
@@ -30,10 +31,12 @@ export default function WebMenu({
   }, [placeholderHeight, prevScroll]);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    const sub = fromEvent(window, "scroll")
+      .pipe(sampleTime(50))
+      .subscribe(handleScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      sub.unsubscribe();
     };
   }, [handleScroll]);
 
@@ -60,7 +63,7 @@ export default function WebMenu({
         leaveFrom="translate-y-0"
         leaveTo="-translate-y-full"
       >
-        <Menu className=" p-5" as="div">
+        <Menu className="p-5" as="div">
           <MenuItem href={"/"}>WEB</MenuItem>
           {menuItems.map((menuItem, index) => (
             <MenuItem key={"webMenu" + index} href={menuItem.href}>

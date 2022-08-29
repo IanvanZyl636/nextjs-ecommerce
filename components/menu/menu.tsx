@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { fromEvent, throttleTime } from "rxjs";
 import { MenuItemModel } from "../../common/models/menu-item.model";
 import MobileMenu from "./components/mobile-menu/mobile-menu";
 import WebMenu from "./components/web-menu/web-menu";
@@ -35,10 +36,12 @@ export default function Menu() {
   useEffect(() => {
     handleResize();
 
-    window.addEventListener("resize", handleResize);
+    const sub = fromEvent(window, "resize")
+      .pipe(throttleTime(200))
+      .subscribe(handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      sub.unsubscribe();
     };
   }, [handleResize]);
 
