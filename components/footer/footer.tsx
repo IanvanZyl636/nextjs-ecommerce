@@ -1,16 +1,9 @@
 import styles from "../../styles/Home.module.css";
 import Image from "next/image";
-import Menu from "../../components/menu/menu";
 
-export default function MenuSideMenuPage({ children }: any) {
+export default function Footer() {
   return (
-    <div className={styles.container}>
-      <Menu></Menu>
-
-      <div>SIDE MENU</div>
-
-      {children}
-
+    <>
       <footer className={styles.footer}>
         <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
@@ -23,6 +16,6 @@ export default function MenuSideMenuPage({ children }: any) {
           </span>
         </a>
       </footer>
-    </div>
+    </>
   );
 }
