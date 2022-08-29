@@ -5,12 +5,12 @@ import { ReactElement } from "react";
 
 export default function MenuPage({ children }: { children: ReactElement }) {
   return (
-    <div className={styles.container}>
+    <>
       <Menu></Menu>
 
       {children}
 
       <Footer></Footer>
-    </div>
+    </>
   );
 }

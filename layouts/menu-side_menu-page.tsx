@@ -1,5 +1,4 @@
 import styles from "../styles/Home.module.css";
-import Image from "next/image";
 import Menu from "../components/menu/menu";
 import Footer from "../components/footer/footer";
 import { ReactElement } from "react";
@@ -10,7 +9,7 @@ export default function MenuSideMenuPage({
   children: ReactElement;
 }) {
   return (
-    <div className={styles.container}>
+    <>
       <Menu></Menu>
 
       <div>SIDE MENU</div>
@@ -18,6 +17,6 @@ export default function MenuSideMenuPage({
       {children}
 
       <Footer></Footer>
-    </div>
+    </>
   );
 }
