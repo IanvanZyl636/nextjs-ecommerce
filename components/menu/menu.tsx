@@ -1,17 +1,30 @@
-import { Menu as HLMenu, Transition } from "@headlessui/react";
-import { useEffect, useRef, useState } from "react";
-import MenuItem from "./components/menu-item/menu-item";
+import { Transition } from "@headlessui/react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { MenuItemModel } from "../../common/models/menu-item.model";
+import MobileMenu from "./components/mobile-menu/mobile-menu";
+import WebMenu from "./components/web-menu/web-menu";
+
+const menuItems: MenuItemModel[] = [
+  {
+    href: "/",
+    text: "Home",
+  },
+  {
+    href: "/products",
+    text: "Products",
+  },
+];
 
 export default function Menu() {
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
   const [menuTransition, setMenuTransition] = useState(true);
-  let prevScroll = 0;
   const ref = useRef<HTMLDivElement>(null);
+  const [prevScroll, setPrevScroll] = useState(0);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const currentScroll = window.scrollY;
 
-    if (currentScroll >= prevScroll) {
+    if (currentScroll >= prevScroll && currentScroll >= placeholderHeight) {
       setMenuTransition(false);
     }
 
@@ -19,10 +32,10 @@ export default function Menu() {
       setMenuTransition(true);
     }
 
-    prevScroll = window.scrollY;
-  };
+    setPrevScroll(window.scrollY);
+  }, [placeholderHeight, prevScroll]);
 
-  useEffect(() => {
+  const handleResize = useCallback(() => {
     if (!ref || !ref.current) {
       return;
     }
@@ -36,12 +49,24 @@ export default function Menu() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [handleScroll]);
+
+  useEffect(() => {
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [handleResize]);
 
   return (
     <>
-      <div style={{ marginTop: placeholderHeight }}></div>
+      <div style={{ paddingTop: placeholderHeight }}></div>
+
       <Transition
+        ref={ref}
         className="fixed top-0 bg-white w-full"
         show={menuTransition}
         enter="duration-[400ms]"
@@ -51,10 +76,11 @@ export default function Menu() {
         leaveFrom="translate-y-0"
         leaveTo="-translate-y-full"
       >
-        <HLMenu ref={ref} as="div">
-          <MenuItem href={"/"}>Home</MenuItem>
-          <MenuItem href={"/products"}>Products</MenuItem>
-        </HLMenu>
+        <MobileMenu
+          className="block md:hidden"
+          menuItems={menuItems}
+        ></MobileMenu>
+        <WebMenu className="hidden md:block" menuItems={menuItems}></WebMenu>
       </Transition>
     </>
   );

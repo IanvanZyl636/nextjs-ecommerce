@@ -7,12 +7,7 @@ export declare type LinkProps = {
   children: ReactElement | string;
 };
 
-const Link: React.ForwardRefExoticComponent<
-  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
-    LinkProps & {
-      children?: React.ReactNode;
-    } & React.RefAttributes<HTMLAnchorElement>
-> = forwardRef(
+const Link = forwardRef(
   (
     { href, children }: LinkProps,
     ref: LegacyRef<HTMLAnchorElement> | undefined
