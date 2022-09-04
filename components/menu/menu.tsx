@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { fromEvent, throttleTime } from "rxjs";
+import { GLOBAL } from "../../common/constants/global.const";
 import { MenuItemModel } from "../../common/models/menu-item.model";
 import MobileMenu from "./components/mobile-menu/mobile-menu";
 import WebMenu from "./components/web-menu/web-menu";
@@ -25,7 +26,7 @@ export default function Menu() {
       return;
     }
 
-    if (windowWidth >= 768) {
+    if (windowWidth >= GLOBAL.mobileMaxWidth) {
       setIsWebMenuActive(true);
       return;
     }
